@@ -5,6 +5,7 @@ class Program
     static void Main(string[] args)
     {
         Journal journal = new Journal();
+        string connectionString = "Data Source=journal.db";
         bool running = true;
 
         while (running)
@@ -14,7 +15,9 @@ class Program
             Console.WriteLine("2. Display journal");
             Console.WriteLine("3. Save journal to file");
             Console.WriteLine("4. Load journal from file");
-            Console.WriteLine("5. Exit");
+            Console.WriteLine("5. Save journal to database");
+            Console.WriteLine("6. Load journal from database");
+            Console.WriteLine("7. Exit");
             Console.Write("Choose an option: ");
             string choice = Console.ReadLine();
 
@@ -23,7 +26,14 @@ class Program
                 case "1":
                     Console.Write("Enter your response: ");
                     string response = Console.ReadLine();
-                    journal.AddEntry(response);
+                    Console.WriteLine("Select an emotion:");
+                    string[] emotions = journal.GetEmotions();
+                    for (int i = 0; i < emotions.Length; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {emotions[i]}");
+                    }
+                    int emotionChoice = int.Parse(Console.ReadLine()) - 1;
+                    journal.AddEntry(response, emotions[emotionChoice]);
                     break;
                 case "2":
                     journal.DisplayEntries();
@@ -39,6 +49,12 @@ class Program
                     journal.LoadFromFile(loadFilename);
                     break;
                 case "5":
+                    journal.SaveToDatabase(connectionString);
+                    break;
+                case "6":
+                    journal.LoadFromDatabase(connectionString);
+                    break;
+                case "7":
                     running = false;
                     break;
                 default:
